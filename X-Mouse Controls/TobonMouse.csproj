@@ -20,7 +20,16 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- Memoria: la app queda en la bandeja todo el dia. Sin GC en segundo plano (ahorra
+         un hilo y deja el heap mas pequeno), sin datos de globalizacion ICU (es una app de
+         un solo idioma) y con el GC priorizando devolver memoria en vez de reservarla. -->
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
+
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.GC.ConserveMemory" Value="5" />
+  </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\tobonmouse.ico" />
