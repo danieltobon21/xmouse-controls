@@ -8,9 +8,15 @@
 // - https://joelpurra.com/
 // - https://www.gnu.org/licenses/
 // </copyright>
+//
+// Modificado para TobonMouse (2026, Daniel Tobon): la ventana ya no se abre por StartupUri,
+// se crea aqui para poder arrancar oculta en la bandeja (argumento -tray) y el cierre de la
+// ventana oculta en lugar de salir.
 
 namespace XMouseControls
 {
+    using System;
+    using System.Linq;
     using System.Windows;
 
     /// <summary>
@@ -18,5 +24,29 @@ namespace XMouseControls
     /// </summary>
     public partial class App : Application
     {
+        private TrayIcon trayIcon;
+
+        /// <inheritdoc/>
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            // Salir solo desde la bandeja: cerrar la ventana la oculta.
+            this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            bool startHidden = (e.Args ?? Array.Empty<string>())
+                .Any(argument => string.Equals(argument, AutoStart.TrayArgument, StringComparison.OrdinalIgnoreCase));
+
+            MainWindow window = new MainWindow();
+            this.trayIcon = new TrayIcon(window);
+            window.AttachTrayIcon(this.trayIcon);
+
+            this.Exit += (sender, args) => this.trayIcon?.Dispose();
+
+            if (!startHidden)
+            {
+                window.Show();
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-// <copyright file="AssemblyInfo.cs" company="Joel Purra">
+﻿// <copyright file="AssemblyInfo.cs" company="Joel Purra">
 // X-Mouse Controls by Joel Purra
 // Copyright © 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
 // All rights reserved. Released under GNU General Public License version 3.0 (GPL-3.0).
@@ -8,6 +8,9 @@
 // - https://joelpurra.com/
 // - https://www.gnu.org/licenses/
 // </copyright>
+//
+// TobonMouse (2026, Daniel Tobon): mismo archivo con la identidad del producto cambiada
+// (titulo, compania, producto, copyright y version). El codigo de la aplicacion no cambia aqui.
 
 using System.Reflection;
 using System.Resources;
@@ -17,12 +20,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("X-Mouse Controls")]
+[assembly: AssemblyTitle("TobonMouse")]
 [assembly: AssemblyDescription("Microsoft Windows utility to manage the active window tracking/raising settings. This is known as x-mouse behavior or focus follows mouse on Unix and Linux systems.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Joel Purra, https://joelpurra.com/")]
-[assembly: AssemblyProduct("X-Mouse Controls, https://joelpurra.com/projects/X-Mouse_Controls/")]
-[assembly: AssemblyCopyright("Copyright © Joel Purra 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023")]
+[assembly: AssemblyCompany("Daniel Tobon - build propia de X-Mouse Controls (Joel Purra)")]
+[assembly: AssemblyProduct("TobonMouse, https://github.com/danieltobon21/xmouse-controls")]
+[assembly: AssemblyCopyright("Copyright © Joel Purra 2007-2023 (X-Mouse Controls, GPL-3.0); modificaciones © 2026 Daniel Tobon (TobonMouse)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -59,5 +62,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

@@ -1,4 +1,4 @@
-// <copyright file="NativeMethods.cs" company="Joel Purra">
+﻿// <copyright file="NativeMethods.cs" company="Joel Purra">
 // X-Mouse Controls by Joel Purra
 // Copyright © 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
 // All rights reserved. Released under GNU General Public License version 3.0 (GPL-3.0).
@@ -8,6 +8,9 @@
 // - https://joelpurra.com/
 // - https://www.gnu.org/licenses/
 // </copyright>
+//
+// Archivo modificado para TobonMouse (2026, Daniel Tobon): identidad del producto, destino .NET 8
+// y textos de la interfaz. La logica de SystemParametersInfo es la del original.
 
 #pragma warning disable SA1600 // Elements must be documented
 namespace SystemParametersInfo

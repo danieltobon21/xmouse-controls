@@ -8,6 +8,10 @@
 // - https://joelpurra.com/
 // - https://www.gnu.org/licenses/
 // </copyright>
+//
+// Modificado para TobonMouse (2026, Daniel Tobon): casilla de arranque con Windows, cierre que
+// oculta a la bandeja en lugar de salir, textos en espanol y el retardo ya no se pone a cero al
+// escribir un valor no numerico en la casilla del retardo.
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Styles
@@ -16,6 +20,7 @@
 namespace XMouseControls
 {
     using System;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Windows;
     using System.Windows.Documents;
@@ -30,12 +35,22 @@ namespace XMouseControls
     {
         private readonly WindowTrackingValues windowTrackingValues = new WindowTrackingValues();
         private bool pauseRefresh = false;
+        private bool pauseAutoStartHandler = false;
+        private TrayIcon trayIcon;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
             this.DataContext = this.windowTrackingValues;
+
+            this.LoadAutoStartState();
+        }
+
+        /// <summary>Guarda el icono de bandeja para poder mostrar/ocultar la ventana.</summary>
+        public void AttachTrayIcon(TrayIcon icon)
+        {
+            this.trayIcon = icon;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -43,6 +58,23 @@ namespace XMouseControls
             base.OnSourceInitialized(e);
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source.AddHook(this.WndProc);
+        }
+
+        private void LoadAutoStartState()
+        {
+            try
+            {
+                this.pauseAutoStartHandler = true;
+                this.startWithWindowsCheckbox.IsChecked = AutoStart.IsEnabled();
+            }
+            catch (Exception)
+            {
+                // Si no se puede leer el registro, la casilla queda como esta.
+            }
+            finally
+            {
+                this.pauseAutoStartHandler = false;
+            }
         }
 
         private void GetValues()
@@ -58,7 +90,7 @@ namespace XMouseControls
             }
             catch
             {
-                MessageBox.Show("Failed to read active window tracking value.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No se pudo leer el seguimiento de ventanas.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             try
@@ -67,7 +99,7 @@ namespace XMouseControls
             }
             catch
             {
-                MessageBox.Show("Failed to read active window raising value.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No se pudo leer el traer-al-frente (raising).", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             try
@@ -76,7 +108,7 @@ namespace XMouseControls
             }
             catch
             {
-                MessageBox.Show("Failed to read active window tracking delay value.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No se pudo leer el retardo del seguimiento de ventanas.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             this.windowTrackingValues.IsTrackingEnabled = windowTrackingIsEnabled;
@@ -92,7 +124,7 @@ namespace XMouseControls
             }
             catch
             {
-                MessageBox.Show("Failed to set active window tracking value.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No se pudo aplicar el seguimiento de ventanas.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             try
@@ -101,7 +133,7 @@ namespace XMouseControls
             }
             catch
             {
-                MessageBox.Show("Failed to set active window raising value.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No se pudo aplicar el traer-al-frente (raising).", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             try
@@ -110,7 +142,7 @@ namespace XMouseControls
             }
             catch
             {
-                MessageBox.Show("Failed to set active window tracking delay value.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("No se pudo aplicar el retardo del seguimiento de ventanas.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -134,7 +166,7 @@ namespace XMouseControls
             // Not looking very nice, but it's a workaround for standalone applications.
             // https://laurenlavoie.com/avalon/159
             Uri uri = ((Hyperlink)sender).NavigateUri;
-            Process.Start(new ProcessStartInfo(uri.ToString()));
+            Process.Start(new ProcessStartInfo(uri.ToString()) { UseShellExecute = true });
             e.Handled = true;
         }
 
@@ -143,20 +175,59 @@ namespace XMouseControls
             this.RefreshValues();
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            // Cerrar no sale de la aplicacion: se queda en la bandeja para que el ajuste siga
+            // activo. Para salir de verdad, clic derecho en el icono -> Salir.
+            if (this.trayIcon == null)
+            {
+                return;
+            }
+
+            e.Cancel = true;
+            this.trayIcon.HideWindow();
+        }
+
         private void applyButton_Click(object sender, RoutedEventArgs e)
         {
             this.ApplyValues();
         }
 
+        private void startWithWindowsCheckbox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (this.pauseAutoStartHandler)
+            {
+                return;
+            }
+
+            bool enable = this.startWithWindowsCheckbox.IsChecked == true;
+
+            try
+            {
+                AutoStart.Set(enable);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudo cambiar el arranque con Windows: " + ex.Message,
+                    "Aviso",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                this.LoadAutoStartState();
+            }
+        }
+
         private void delayTextbox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            uint delay = (uint)WindowTrackingValues.DefaultDelay;
+            uint delay;
 
+            // Si lo escrito no es un numero, se ignora: antes esto ponia el retardo a 0.
             if (!uint.TryParse(this.delayTextbox.Text, out delay))
             {
-                // delayTextbox.Text = delay.ToString();
-                this.windowTrackingValues.Delay = delay;
+                return;
             }
+
+            this.windowTrackingValues.Delay = delay;
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

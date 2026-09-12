@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    TobonMouse: build propia de X-Mouse Controls (Joel Purra, GPL-3).
+    Cambios respecto al original: se apunta a .NET 8 (el original era .NET Framework 3.5, sin
+    soporte y sin targeting packs en las maquinas modernas), icono y nombre propios, interfaz
+    en espanol, bandeja del sistema y opcion de arrancar con Windows. El codigo de lectura y
+    escritura de los ajustes (SystemParametersInfo) es el original sin cambios.
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+    <RootNamespace>XMouseControls</RootNamespace>
+    <AssemblyName>TobonMouse</AssemblyName>
+    <ApplicationIcon>Resources\tobonmouse.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\tobonmouse.ico" />
+  </ItemGroup>
+
+</Project>

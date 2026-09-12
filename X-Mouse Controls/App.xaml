@@ -1,7 +1,8 @@
 <Application
     x:Class="XMouseControls.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    StartupUri="MainWindow.xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Sin StartupUri: la ventana se crea en App.OnStartup para poder arrancar oculta
+         (argumento -tray) cuando Windows la lanza al iniciar sesion. -->
     <Application.Resources />
 </Application>
