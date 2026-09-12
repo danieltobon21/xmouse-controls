@@ -1,4 +1,4 @@
-// <copyright file="MainWindow.xaml.cs" company="Joel Purra">
+﻿// <copyright file="MainWindow.xaml.cs" company="Joel Purra">
 // X-Mouse Controls by Joel Purra
 // Copyright © 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
 // All rights reserved. Released under GNU General Public License version 3.0 (GPL-3.0).
@@ -48,7 +48,7 @@ namespace XMouseControls
         }
 
         /// <summary>Guarda el icono de bandeja para poder mostrar/ocultar la ventana.</summary>
-        public void AttachTrayIcon(TrayIcon icon)
+        internal void AttachTrayIcon(TrayIcon icon)
         {
             this.trayIcon = icon;
         }
