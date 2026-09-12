@@ -20,11 +20,14 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <!-- Memoria: la app queda en la bandeja todo el dia. Sin GC en segundo plano (ahorra
-         un hilo y deja el heap mas pequeno), sin datos de globalizacion ICU (es una app de
-         un solo idioma) y con el GC priorizando devolver memoria en vez de reservarla. -->
+    <!-- Memoria: la app queda en la bandeja todo el dia, asi que se apaga el GC en segundo
+         plano (ahorra un hilo y deja el heap mas pequeno) y se le pide que priorice devolver
+         memoria en vez de reservarla (System.GC.ConserveMemory, mas abajo).
+         OJO: nada de <InvariantGlobalization>true</InvariantGlobalization> aqui. WPF resuelve
+         la cultura especifica de la ventana (en-us) al enlazar datos y, sin los datos de ICU,
+         tira "Cannot find non-neutral culture related to 'en-us'" y el proceso muere al
+         arrancar. Probado en esta maquina: la app no arranca con esa opcion. -->
     <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
-    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
